@@ -1,0 +1,17 @@
+{
+  "name": "forum-app",
+  "private": true,
+  "workspaces": [
+    "apps/*"
+  ],
+  "scripts": {
+    "test": "yarn workspaces run test",
+    "lint": "yarn workspaces run lint"
+  },
+  "devDependencies": {
+    "prettier": "^2.1.2"
+  },
+  "engines": {
+    "yarn": "1.x"
+  }
+}
