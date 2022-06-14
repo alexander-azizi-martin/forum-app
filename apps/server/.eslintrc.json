@@ -1,0 +1,28 @@
+{
+  "extends": ["airbnb-base", "airbnb-typescript/base"],
+  "parser": "@typescript-eslint/parser",
+  "parserOptions": {
+    "project": "./tsconfig.json"
+  },
+  "plugins": ["@typescript-eslint"],
+  "ignorePatterns": ["node_modules", "dist"],
+  "rules": {
+    "import/prefer-default-export": ["warn"],
+    "max-classes-per-file": ["warn"],
+    "no-param-reassign": ["warn"],
+    "no-plusplus": ["off"],
+    "import/no-extraneous-dependencies": [
+      "error",
+      {
+        "devDependencies": ["**/tests/**", "**/scripts/**", "jest.config.ts"]
+      }
+    ],
+    "import/extensions": [
+      "error",
+      {
+        "js": "never",
+        "ts": "never"
+      }
+    ]
+  }
+}
