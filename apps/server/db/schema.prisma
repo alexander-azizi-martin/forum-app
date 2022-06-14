@@ -1,0 +1,126 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model ClosureTable {
+  postId                                       String   @db.Uuid
+  ancestorId                                   String   @db.Uuid
+  descendentId                                 String   @db.Uuid
+  Comments_ClosureTable_ancestorIdToComments   Comments @relation("ClosureTable_ancestorIdToComments", fields: [ancestorId], references: [commentId], onDelete: Cascade, onUpdate: NoAction)
+  Comments_ClosureTable_descendentIdToComments Comments @relation("ClosureTable_descendentIdToComments", fields: [descendentId], references: [commentId], onDelete: Cascade, onUpdate: NoAction)
+  Posts                                        Posts    @relation(fields: [postId], references: [postId], onDelete: Cascade, onUpdate: NoAction)
+
+  @@id([postId, ancestorId, descendentId])
+}
+
+model Comments {
+  commentId                                        String         @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  postId                                           String         @db.Uuid
+  votableId                                        String         @db.Uuid
+  mediaId                                          String?        @db.Uuid
+  userId                                           String?        @db.Uuid
+  createdAt                                        DateTime       @default(now()) @db.Timestamp(6)
+  updatedAt                                        DateTime       @default(now()) @db.Timestamp(6)
+  Media                                            Media?         @relation(fields: [mediaId], references: [mediaId], onDelete: NoAction, onUpdate: NoAction)
+  Posts                                            Posts          @relation(fields: [postId], references: [postId], onDelete: NoAction, onUpdate: NoAction)
+  Users                                            Users?         @relation(fields: [userId], references: [userId], onUpdate: NoAction)
+  Votables                                         Votables       @relation(fields: [votableId], references: [votableId], onDelete: NoAction, onUpdate: NoAction)
+  ClosureTable_ClosureTable_ancestorIdToComments   ClosureTable[] @relation("ClosureTable_ancestorIdToComments")
+  ClosureTable_ClosureTable_descendentIdToComments ClosureTable[] @relation("ClosureTable_descendentIdToComments")
+  Replies_CommentsToReplies_commentId              Replies[]      @relation("CommentsToReplies_commentId")
+  Replies_CommentsToReplies_parentId               Replies[]      @relation("CommentsToReplies_parentId")
+}
+
+model Media {
+  mediaId     String     @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  mediaTypeId String     @db.Uuid
+  media       Json
+  MediaTypes  MediaTypes @relation(fields: [mediaTypeId], references: [mediaTypeId], onDelete: NoAction, onUpdate: NoAction)
+  Comments    Comments[]
+  Posts       Posts[]
+}
+
+model MediaTypes {
+  mediaTypeId String  @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  mediaType   String  @unique @db.VarChar(20)
+  Media       Media[]
+}
+
+model PostTypes {
+  postTypeID String @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  postType   String @unique @db.VarChar(15)
+}
+
+model Posts {
+  postId       String         @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  votableId    String         @db.Uuid
+  mediaId      String?        @db.Uuid
+  userId       String?        @db.Uuid
+  title        String         @db.VarChar(300)
+  createdAt    DateTime       @default(now()) @db.Timestamp(6)
+  updatedAt    DateTime       @default(now()) @db.Timestamp(6)
+  Media        Media?         @relation(fields: [mediaId], references: [mediaId], onDelete: NoAction, onUpdate: NoAction)
+  Users        Users?         @relation(fields: [userId], references: [userId], onUpdate: NoAction)
+  Votables     Votables       @relation(fields: [votableId], references: [votableId], onDelete: NoAction, onUpdate: NoAction)
+  ClosureTable ClosureTable[]
+  Comments     Comments[]
+}
+
+model Replies {
+  replyId                              String    @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  parentId                             String?   @db.Uuid
+  commentId                            String    @db.Uuid
+  Comments_CommentsToReplies_commentId Comments  @relation("CommentsToReplies_commentId", fields: [commentId], references: [commentId], onDelete: NoAction, onUpdate: NoAction)
+  Comments_CommentsToReplies_parentId  Comments? @relation("CommentsToReplies_parentId", fields: [parentId], references: [commentId], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model Sessions {
+  userId       String   @db.Uuid
+  refreshToken String   @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  expiration   DateTime @default(dbgenerated("(now() + '1 year'::interval)")) @db.Timestamp(6)
+  Users        Users    @relation(fields: [userId], references: [userId], onDelete: Cascade, onUpdate: NoAction)
+}
+
+model Users {
+  userId    String     @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  username  String     @unique @db.VarChar(20)
+  password  String     @db.Char(60)
+  createdAt DateTime   @default(now()) @db.Timestamp(6)
+  updatedAt DateTime   @default(now()) @db.Timestamp(6)
+  Comments  Comments[]
+  Posts     Posts[]
+  Sessions  Sessions[]
+  Votes     Votes[]
+}
+
+model Votables {
+  votableId String     @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  netVotes  Int        @default(0)
+  upVotes   Int        @default(0)
+  downVotes Int        @default(0)
+  Comments  Comments[]
+  Posts     Posts[]
+  Votes     Votes[]
+}
+
+model Votes {
+  userId    String   @db.Uuid
+  votableId String   @db.Uuid
+  voteType  vote
+  createdAt DateTime @default(now()) @db.Timestamp(6)
+  updatedAt DateTime @default(now()) @db.Timestamp(6)
+  Users     Users    @relation(fields: [userId], references: [userId], onDelete: Cascade, onUpdate: NoAction)
+  Votables  Votables @relation(fields: [votableId], references: [votableId], onDelete: Cascade, onUpdate: NoAction)
+
+  @@id([userId, votableId])
+}
+
+enum vote {
+  upvote
+  downvote
+}

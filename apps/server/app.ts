@@ -2,6 +2,8 @@ import fastify, { FastifyServerOptions } from 'fastify';
 import autoload from '@fastify/autoload';
 import { URL } from 'url';
 
+import prisma from '~/config/prisma';
+
 const createApp = (options: FastifyServerOptions) => {
   const app = fastify(options);
 
@@ -11,6 +13,14 @@ const createApp = (options: FastifyServerOptions) => {
     dir: components.pathname,
     dirNameRoutePrefix: false,
     scriptPattern: /.*\.routes\.(ts|js)$/,
+  });
+
+  app.addHook('onReady', async () => {
+    await prisma.$connect();
+  });
+
+  app.addHook('onClose', async () => {
+    await prisma.$disconnect();
   });
 
   return app;

@@ -8,10 +8,13 @@
     "build": "ttsc",
     "dev": "tsc-watch --onSuccess \"cross-env NODE_ENV=development node --experimental-specifier-resolution=node -r dotenv/config dist\" --compiler ttypescript/bin/tsc",
     "test": "cross-env NODE_ENV=test jest --runInBand --passWithNoTests -o",
-    "lint": "eslint --ext .ts ."
+    "lint": "eslint --ext .ts .",
+    "prepare": "prisma generate --schema=./db/schema.prisma",
+    "prisma:pull": "prisma db pull --schema=./db/schema.prisma && yarn prepare"
   },
   "dependencies": {
     "@fastify/autoload": "^5.0.0",
+    "@prisma/client": "^3.15.1",
     "fastify": "^4.0.2",
     "pino": "^8.0.0"
   },
@@ -29,6 +32,7 @@
     "eslint-plugin-import": "^2.26.0",
     "jest": "^28.1.1",
     "pino-pretty": "^8.0.0",
+    "prisma": "^3.15.1",
     "ts-jest": "^28.0.5",
     "ts-node": "^10.8.1",
     "tsc-watch": "^5.0.3",
