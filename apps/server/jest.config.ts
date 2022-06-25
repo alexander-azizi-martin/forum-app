@@ -5,9 +5,7 @@ const config: Config.InitialOptions = {
   testEnvironment: 'node',
   verbose: true,
   testPathIgnorePatterns: ['dist', 'node_modules'],
-  moduleNameMapper: {
-    '^~/(.*)$': '<rootDir>/$1',
-  },
+  moduleDirectories: ['src', 'node_modules'],
 };
 
 export default config;
