@@ -14,7 +14,12 @@
     "import/no-extraneous-dependencies": [
       "error",
       {
-        "devDependencies": ["**/tests/**", "**/scripts/**", "jest.config.ts"]
+        "devDependencies": [
+          "**/tests/**",
+          "**/scripts/**",
+          "jest.config.ts",
+          "webpack.config.ts"
+        ]
       }
     ],
     "import/extensions": [

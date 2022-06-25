@@ -1,21 +1,13 @@
 {
   "compilerOptions": {
     "target": "ES6",
-    "module": "ESNext",
+    "module": "CommonJS",
     "moduleResolution": "Node",
     "esModuleInterop": true,
     "allowJs": true,
     "strict": true,
-    "baseUrl": ".",
+    "baseUrl": "src",
     "outDir": "dist",
-    "paths": {
-      "~/*": ["./*"]
-    },
-    "plugins": [
-      {
-        "transform": "typescript-transform-paths"
-      }
-    ]
   },
   "exclude": ["dist"]
 }
