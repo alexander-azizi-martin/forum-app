@@ -7,6 +7,7 @@
     "build": "webpack",
     "dev": "webpack --watch --node-env=development",
     "test": "jest --runInBand --passWithNoTests --onlyChanged --watch",
+    "tc": "tsc --emitDeclarationOnly --declaration",
     "lint": "eslint --ext .ts .",
     "prepare": "prisma generate",
     "prisma:pull": "prisma db pull && yarn prepare"
