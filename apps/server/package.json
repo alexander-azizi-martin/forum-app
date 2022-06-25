@@ -9,8 +9,8 @@
     "dev": "tsc-watch --onSuccess \"cross-env NODE_ENV=development node --experimental-specifier-resolution=node -r dotenv/config dist\" --compiler ttypescript/bin/tsc",
     "test": "cross-env NODE_ENV=test jest --runInBand --passWithNoTests -o",
     "lint": "eslint --ext .ts .",
-    "prepare": "prisma generate --schema=./db/schema.prisma",
-    "prisma:pull": "prisma db pull --schema=./db/schema.prisma && yarn prepare"
+    "prepare": "prisma generate",
+    "prisma:pull": "prisma db pull && yarn prepare"
   },
   "dependencies": {
     "@fastify/autoload": "^5.0.0",
