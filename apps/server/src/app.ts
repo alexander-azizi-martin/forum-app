@@ -1,16 +1,12 @@
 import fastify, { FastifyServerOptions } from 'fastify';
-import prisma from 'config/prisma';
+import { configPrisma } from 'config/prisma';
+import { SessionRouter } from 'components/sessions';
+import { UserRouter } from 'components/users';
 
 const createApp = (options: FastifyServerOptions) => {
   const app = fastify(options);
 
-  app.addHook('onReady', async () => {
-    await prisma.$connect();
-  });
-
-  app.addHook('onClose', async () => {
-    await prisma.$disconnect();
-  });
+  app.register(configPrisma).register(SessionRouter).register(UserRouter);
 
   return app;
 };
